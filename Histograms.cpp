@@ -17,11 +17,14 @@
 
 using namespace std;
 
-TCanvas *c1 = new TCanvas("c1","c1",1200,600);
-TH1F * hist1 = new TH1F("Energy Deposition","Energy Deposition+",100,0,250);
 
+int main(int argc, char **argv) {
 
-int main() {
+    TApplication theApp("App", &argc, argv);
+    TCanvas *c1 = new TCanvas("c1","c1",1200,600);
+    //c1->SetWindowPosition(100, 100); // Optional: set the initial window position
+    //c1->SetWindowAttributes();
+    TH1F * hist1 = new TH1F("Energy Deposition","Energy Deposition+",100,0,250);
     //  Vectors to store initial data in
     vector<double> eventnum;
     vector<double> engs;
@@ -30,7 +33,7 @@ int main() {
     // Create a matrix using a vector of vectors of variant
     
 
-    int nevents = 3;
+    int nevents = 10;
     vector<vector<double>> events;
     vector<vector<double>> toten;
 
@@ -88,7 +91,7 @@ int main() {
     inputFile.close();
 
     // Store our data as vector of vectors
-    for (int n = 0; n < nevents-1; ++n) {
+    for (int n = 0; n < nevents; ++n) {
         vector<double> row1;
         vector<double> row2;
         for (int i = 0; i < eventnum.size(); ++i) {
@@ -104,7 +107,7 @@ int main() {
 
     // Store energy deposition of each event on each detector
     int ndet = 5;
-    for (int e = 0; e < nevents*2-1; e+=2) {
+    for (int e = 0; e < nevents*2; e+=2) {
         vector<double> row;
         for (int n = 0; n < ndet; n++) {
             double sum = 0;
@@ -119,15 +122,23 @@ int main() {
         //cout << "test = " << row[0] << endl;
         toten.push_back(row);
     }
-    //cout << "test = " << toten[0][0] << endl;
+    cout << "test = " << events.size() << endl;
 
-    hist1 ->Fill(toten[0][0]);
-    hist1 ->Fill(toten[1][0]);
+    for (int i = 0; i<toten.size(); i++) {
+        hist1->Fill(toten[i][0]);
+    }
+    //hist1 ->Fill(toten[0][0]);
+   // hist1 ->Fill(toten[1][0]);
 
     //draw graph
 	c1->cd();
 	hist1->Draw();
+    c1->Update();
+
     c1->SaveAs("histogram.png");
+
+    theApp.SetIdleTimer(30,".q");  // set up a failsafe timer to end the program
+	theApp.Run(true);
 
 
     return 0;
