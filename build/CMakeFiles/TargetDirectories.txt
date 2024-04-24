@@ -1,0 +1,7 @@
+/Users/jacob/compphys2/g4project/build/CMakeFiles/exampleB2a.dir
+/Users/jacob/compphys2/g4project/build/CMakeFiles/edit_cache.dir
+/Users/jacob/compphys2/g4project/build/CMakeFiles/rebuild_cache.dir
+/Users/jacob/compphys2/g4project/build/CMakeFiles/list_install_components.dir
+/Users/jacob/compphys2/g4project/build/CMakeFiles/install.dir
+/Users/jacob/compphys2/g4project/build/CMakeFiles/install/local.dir
+/Users/jacob/compphys2/g4project/build/CMakeFiles/install/strip.dir
