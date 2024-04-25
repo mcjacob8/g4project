@@ -63,7 +63,7 @@ class TrackerHit : public G4VHit
 
     // methods from base class
     void Draw() override;
-    void Print() override;
+    //void Print() override;
     void WriteToFile(const std::string& filename, G4int eventID); // Declaration of WriteToFile function
 
     // Set methods

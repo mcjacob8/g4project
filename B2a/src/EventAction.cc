@@ -32,6 +32,7 @@
 #include "G4Event.hh"
 #include "G4EventManager.hh"
 #include "G4TrajectoryContainer.hh"
+#include "G4AnalysisManager.hh"
 #include "G4Trajectory.hh"
 #include "G4ios.hh"
 #include "TrackerHit.hh" // Include the header file for TrackerHit
@@ -49,6 +50,7 @@ void EventAction::BeginOfEventAction(const G4Event*)
 
 void EventAction::EndOfEventAction(const G4Event* event)
 {
+  G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
   // get number of stored trajectories
 
   G4TrajectoryContainer* trajectoryContainer = event->GetTrajectoryContainer();
@@ -59,7 +61,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
 
   G4int eventID = event->GetEventID();
   if ( eventID < 100 || eventID % 100 == 0) {
-    G4cout << ">>> Event: " << eventID  << G4endl;
+    //G4cout << ">>> Event: " << eventID  << G4endl;
     if ( trajectoryContainer ) {
       G4cout << "    " << n_trajectories
              << " trajectories stored in this event." << G4endl;
@@ -69,35 +71,45 @@ void EventAction::EndOfEventAction(const G4Event* event)
            << hc->GetSize() << " hits stored in this event" << G4endl;
   }
 
-  //B2::TrackerHit hit;
   B2::TrackerHit* hit = nullptr;
-  //TrackerHitsCollection* hitsCollection = GetHitsCollection("trackerHitsCollectionName", event);
   G4VHitsCollection* hc = event->GetHCofThisEvent()->GetHC(0);
   if (hc) {
+    G4double sum = 0;
+    G4double avx = 0;
+    G4double avy = 0;
+    G4double num = 0;
+
         // Loop over hits in the collection
         for (size_t i = 0; i < hc->GetSize(); ++i) {
             //TrackerHit* hit = (*hitsCollection)[i];
             //hit = (*hc)[i];
             hit = dynamic_cast<B2::TrackerHit*>(hc->GetHit(i));
-            if (hit) {
-              G4int eventID = event->GetEventID(); // Get the event ID
-              hit->WriteToFile("event_summary.txt", eventID);
-              std::cout << "!!!TrackID: " << hit->GetTrackID() << std::endl;
-
+            // Loop over hits
+            if (hit){
+              G4double ene = hit->GetEdep() / CLHEP::keV;
+              G4int chm = hit->GetChamberNb();
+              G4int tID = hit->GetTrackID();
+              //G4int eID = hit->GetEventID();
+              G4ThreeVector xyz = hit->GetPos() * CLHEP::cm;
+              if (chm == 1){
+                sum += ene;
+                if (tID == 1){
+                  //coordinates here
+                  avx += xyz.x();
+                  avy += xyz.y();
+                  num += 1;
+                  
+                }
+              }
             }
-            //G4int trackID = hit->GetTrackID(); // Get the track ID from the hit
-            //G4int eventID = hit->GetEventID(); // Get the event ID from the hit
-            // Process or use the event-related data as needed
-        }
+      }
+      G4cout << "Average x: " << avx/num  << G4endl;
+      analysisManager->FillH1(1, avx/num);
+      analysisManager->FillH1(0, sum);
+      analysisManager->FillH2(0, avx/num, avy/num);
+      analysisManager->FillNtupleIColumn(0,sum);
+      analysisManager->FillNtupleIColumn(1,avx/num);
     }
-
-  //B2::TrackerHit hit; // Create a TrackerHit object
-
-  //std::cout << "!!!TrackID: " << hit->GetTrackID() << std::endl;
-  //hit->Print();
-  //std::cout << "!!!EventID: " << eventID << std::endl;
-  //std::cout << "!!!ChamberNb: " << hit->GetChamberNb() << std::endl;
-  //hit->WriteToFile("event_summary2.txt"); // Call WriteToFile function with desired filename
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

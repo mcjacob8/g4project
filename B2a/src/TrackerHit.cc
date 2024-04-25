@@ -68,17 +68,17 @@ void TrackerHit::Draw()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void TrackerHit::Print()
+/*void TrackerHit::Print()
 {
 
   G4cout
-     << "  trackID: " << fTrackID << " chamberNb: " << fChamberNb
+     << " trackID: " << fTrackID << " chamberNb: " << fChamberNb
      << "Edep: "
      << std::setw(7) << G4BestUnit(fEdep,"Energy")
      << " Position: "
      << std::setw(7) << G4BestUnit( fPos,"Length")
      << G4endl;
-}
+}*/
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -92,7 +92,7 @@ void TrackerHit::WriteToFile(const std::string& filename, G4int eventID) {
     // Write data to file
     outputFile << "TrackID: " << fTrackID
                << " ChamberNb: " << fChamberNb
-               << " Edep: " << G4BestUnit(fEdep, "Energy")
+               << " Edep: " << fEdep / CLHEP::keV
                << " Position: " << G4BestUnit(fPos, "Length")
                << " EventID: " << eventID
                << std::endl;
