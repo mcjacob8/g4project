@@ -71,18 +71,22 @@ class TrackerHit : public G4VHit
     void SetChamberNb(G4int chamb)      { fChamberNb = chamb; };
     void SetEdep     (G4double de)      { fEdep = de; };
     void SetPos      (G4ThreeVector xyz){ fPos = xyz; };
+    void SetParticleID (G4int part)     { fParticleID = part; };
 
     // Get methods
     G4int GetTrackID() const     { return fTrackID; };
     G4int GetChamberNb() const   { return fChamberNb; };
     G4double GetEdep() const     { return fEdep; };
     G4ThreeVector GetPos() const { return fPos; };
+    G4int GetParticleID() const  { return fParticleID; };
+
 
   private:
     G4int         fTrackID = -1;
     G4int         fChamberNb = -1;
     G4double      fEdep = 0.;
     G4ThreeVector fPos;
+    G4int         fParticleID = -1;
     std::ofstream outputFile; // Declare outputFile as a member variable
 };
 

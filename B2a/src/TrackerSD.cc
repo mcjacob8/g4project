@@ -67,6 +67,8 @@ void TrackerSD::Initialize(G4HCofThisEvent* hce)
 G4bool TrackerSD::ProcessHits(G4Step* aStep,
                                      G4TouchableHistory*)
 {
+  G4Track* track = aStep->GetTrack();
+
   // energy deposit
   G4double edep = aStep->GetTotalEnergyDeposit();
 
@@ -79,6 +81,7 @@ G4bool TrackerSD::ProcessHits(G4Step* aStep,
                                                ->GetCopyNumber());
   newHit->SetEdep(edep);
   newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
+  newHit->SetParticleID (track->GetParticleDefinition()->GetPDGEncoding());
 
   fHitsCollection->insert( newHit );
 

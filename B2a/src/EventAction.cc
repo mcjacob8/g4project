@@ -37,6 +37,7 @@
 #include "G4ios.hh"
 #include "TrackerHit.hh" // Include the header file for TrackerHit
 #include <iostream>  
+#include <map>
 
 namespace B2
 {
@@ -78,6 +79,9 @@ void EventAction::EndOfEventAction(const G4Event* event)
     G4double avx = 0;
     G4double avy = 0;
     G4double num = 0;
+    std::map<int, double> xpos_map;
+    std::map<int, double> ypos_map;
+    std::map<int, double> nums_map;
 
         // Loop over hits in the collection
         for (size_t i = 0; i < hc->GetSize(); ++i) {
@@ -89,11 +93,19 @@ void EventAction::EndOfEventAction(const G4Event* event)
               G4double ene = hit->GetEdep() / CLHEP::keV;
               G4int chm = hit->GetChamberNb();
               G4int tID = hit->GetTrackID();
+              G4int pID = hit->GetParticleID();
               //G4int eID = hit->GetEventID();
-              G4ThreeVector xyz = hit->GetPos() * CLHEP::cm;
+              G4ThreeVector xyz = hit->GetPos() / CLHEP::cm;
               if (chm == 1){
                 sum += ene;
+                //G4cout << "Particle ID: " << hit->GetParticleID()  << G4endl;
+                if (pID == 11){
+                  xpos_map[tID] += xyz.x();
+                  ypos_map[tID] += xyz.y();
+                  nums_map[tID] += 1;
+                }
                 if (tID == 1){
+                  //G4cout << "Particle ID: " << hit->GetParticleID()  << G4endl;
                   //coordinates here
                   avx += xyz.x();
                   avy += xyz.y();
@@ -103,7 +115,13 @@ void EventAction::EndOfEventAction(const G4Event* event)
               }
             }
       }
-      G4cout << "Average x: " << avx/num  << G4endl;
+      for (auto it = nums_map.begin(); it != nums_map.end(); ++it) {
+       // std::cout << "Integer: " << it->first << ", Sum: " << it->second << std::endl;
+       analysisManager->FillH2(1, xpos_map[it->first]/(it->second), ypos_map[it->first]/(it->second));
+
+      }
+      //G4cout << "Particle ID: " << hit->GetParticleID()  << G4endl;
+      //G4cout << "Particle ID: " << hit->GetParticleID()  << G4endl;
       analysisManager->FillH1(1, avx/num);
       analysisManager->FillH1(0, sum);
       analysisManager->FillH2(0, avx/num, avy/num);

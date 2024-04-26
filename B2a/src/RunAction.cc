@@ -60,9 +60,13 @@ RunAction::RunAction()
   analysisManager->CreateH1("Position x", "Position x", 50,-20,20);
 
   // TH2 Histograms
-  analysisManager->CreateH2("x vs. y position of hit", "x position", "y position", 50, -15, 15, 50, -15, 15);
+  analysisManager->CreateH2("x position", "y position", 100, -100, 100, 100, -100, 100);
   analysisManager->SetH2XAxisTitle(0, "x pos (cm)");  // Set x-axis title
   analysisManager->SetH2YAxisTitle(0, "y pos (cm)");  // Set y-axis title
+
+  analysisManager->CreateH2("x position 2", "y position 2", 100, -100, 100, 100, -100, 100);
+  analysisManager->SetH2XAxisTitle(1, "x pos (cm)");  // Set x-axis title
+  analysisManager->SetH2YAxisTitle(1, "y pos (cm)");  // Set y-axis title
 
 
   analysisManager->SetVerboseLevel(1);
